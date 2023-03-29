@@ -14,10 +14,10 @@ mongoose.set('useCreateIndex', true);
 
 //user schema
 var ReviewSchema = new Schema({
-    reviewer_name: { type: String, required: true},
-    rating: { type: String, required: true},
     movie: { type: String, required: true},
-    review: { type: String, required: true}
+    username: { type: String, required: true},
+    review: { type: String, required: true},
+    rating: { type: String, required: true}
 });
 
 ReviewSchema.pre('save', function(next) {
