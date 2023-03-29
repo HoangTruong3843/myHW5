@@ -268,24 +268,24 @@ router.route('/movies')
 // For reviews
 router.route('/reviews')
     .post(function(req, res) {
-            if (!req.body.title || !req.body.rating || !req.body.review) {
+            if (!req.body.rating || !req.body.movie || !req.body.review) {
                 res.json({success: false, msg: 'Please include all data.'});
                 return;
             }
 
             var new_rev = new Review();
 
-            new_rev.title = req.body.title;
             new_rev.rating = req.body.rating;
+            new_rev.movie = req.body.movie;
             new_rev.review = req.body.review;
 
-            let id = req.body.title;
+            let id = req.body.movie;
 
-            Movie.findOne({ title: id }).select('title year genre cast').exec(function(err, title) {
+            Movie.findOne({ title: id }).select('title year genre cast').exec(function(err, movie) {
                 // Movie.findById(id, function(err, movie) {
-                if (!title) {
+                if (!movie) {
                     return res.json({ success: false, message: 'movie does not exist.'});
-                } else if (title) {
+                } else if (movie) {
                     new_rev.save(function(err){
                         if (err) {
                             if (err.code == 11000)
@@ -298,7 +298,8 @@ router.route('/reviews')
                     });
                 }
             })
-    }
+
+        }
     )
     .get(function(req, res) {
             if (!req.body.id) {
@@ -308,10 +309,10 @@ router.route('/reviews')
 
             // check if movie exists
             let id = req.body.id;
-            Movie.findOne({ title: id }).select('title year genre cast').exec(function(err, title) {
+            Movie.findOne({ title: id }).select('title year genre cast').exec(function(err, movie) {
                 // Movie.findById(id, function(err, movie) {
-                if (title) {
-                    Review.findOne({ title: id }).select('reviewer_name rating movie review').exec(function(err, review) {
+                if (movie) {
+                    Review.findOne({ movie: id }).select('reviewer_name rating movie review').exec(function(err, review) {
                         if(review) {
                             //var review_json = JSON.stringify(review);
                             res.json({status: 200, success: true, reviews: review});
@@ -323,8 +324,13 @@ router.route('/reviews')
                     return res.json({ success: false, message: 'movie does not exist.'});
                 }
             })
-    }
-    );
+
+
+
+        }
+    )
+;
+
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
