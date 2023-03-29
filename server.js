@@ -268,7 +268,7 @@ router.route('/movies')
 // For reviews
 router.route('/reviews')
     .post(function(req, res) {
-            if (!req.body.rating || !req.body.title || !req.body.review) {
+            if (!req.body.title || !req.body.rating || !req.body.review) {
                 res.json({success: false, msg: 'Please include all data.'});
                 return;
             }
@@ -276,8 +276,8 @@ router.route('/reviews')
             var new_rev = new Review();
 
             //ew_rev.reviewer_name = req.body.reviewer_name;
-            new_rev.rating = req.body.rating;
             new_rev.title = req.body.title;
+            new_rev.rating = req.body.rating;
             new_rev.review = req.body.review;
 
             let id = req.body.title;
