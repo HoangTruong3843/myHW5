@@ -313,6 +313,22 @@ router.route('/reviews')
 
             // check if movie exists
             let id = req.body.id;
+            // Modified
+            if(req.query.reviews === 'true'){
+                id = Movie.aggregate([
+                    {
+                        $lookup:{
+                            from: Review.collection.name,
+                            localField: '_id',
+                            foreignField: 'movieId',
+                            as: 'reviews',
+                        },
+                    },
+                ]);
+            }else{
+                id = Movie.find();
+            }
+            // stop modify here
             Movie.findOne({ title: id }).select('title year genre cast').exec(function(err, movie) {
                 // Movie.findById(id, function(err, movie) {
                 if (movie) {
