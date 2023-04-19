@@ -13,7 +13,7 @@ try {
 mongoose.set('useCreateIndex', true);
 
 //user schema
-var MovieSchema = new Schema[({
+var MovieSchema = new Schema({
     title: {type: String, required: true, index: { unique: true }},
     year: {type: String, required: true},
     genre: {type: String, required: true},
@@ -23,7 +23,7 @@ var MovieSchema = new Schema[({
     }],
     //New
     imageUrl:{type:String, require:true}
-})];
+});
 
 MovieSchema.pre('save', function(next) {
     var movie = this;
