@@ -313,7 +313,7 @@ router.route('/reviews')
 
             // check if movie exists
             let id = req.body.id;
-            // Modified
+            /* Modified
             if(req.query.reviews === 'true'){
                 id = Movie.aggregate([
                     {
@@ -327,7 +327,7 @@ router.route('/reviews')
                 ]);
             }else{
                 id = Movie.find();
-            }
+            }*/
             // stop modify here
             Movie.findOne({ title: id }).select('title year genre cast').exec(function(err, movie) {
                 // Movie.findById(id, function(err, movie) {
