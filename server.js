@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var passport = require('passport');
+var authController = require('./auth');
 var authJwtController = require('./authjwt');
 var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
@@ -11,16 +12,30 @@ var Review = require('./Reviews');
 
 var app = express();
 
-const port = process.env.PORT || 8080;
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use(passport.initialize());
 app.use(cors());
 
 var router = express.Router();
 
+function getJSONObjectForMovieRequirement(req) {
+    var json = {
+        headers: "No headers",
+        key: process.env.UNIQUE_KEY,
+        body: "No body"
+    };
+
+    if (req.body != null) {
+        json.body = req.body;
+    }
+
+    if (req.headers != null) {
+        json.headers = req.headers;
+    }
+
+    return json;
+}
 router.route('/movies')
     .post(authJwtController.isAuthenticated, function (req, res) {
         if(req.body.Actors.length < 3){
@@ -56,6 +71,7 @@ router.route('/movies')
             });
         }
     })
+
     .get(authJwtController.isAuthenticated, function (req, res) {
         if(req.query.movieId != null){
             Movie.find({_id: mongoose.Types.ObjectId(req.query.movieId)}, function(err, data){
@@ -119,6 +135,7 @@ router.route('/movies')
         }
 
     })
+
     .put(authJwtController.isAuthenticated, function(req,res) {
         if(req.body.Title != null && req.body.Year != null && req.body.Genre != null && req.body.Actors != null && req.body.Actors.length >= 3){
             Movie.findOneAndUpdate({Title:req.body.Search},
@@ -143,6 +160,7 @@ router.route('/movies')
             res.status(400).json({message: "Please no null values"});
         }
     })
+
     .delete(authJwtController.isAuthenticated, function(req,res){
         Movie.findOneAndDelete({Title: req.body.Title}, function(err, doc){
             if(err){
@@ -265,7 +283,6 @@ router.post('/signin', function(req, res) {
             });
         }
 
-
     });
 });
 
@@ -275,4 +292,6 @@ router.all('*', function(req, res) {
 });
 
 app.use('/', router);
-app.listen(port);
+const port = process.env.PORT || 8080;
+//app.listen(port);
+module.exports = app;
