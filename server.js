@@ -77,7 +77,7 @@ router.route('/movies')
                         Year: req.body.Year,
                         Genre: req.body.Genre,
                         Actors: req.body.Actors,
-                        ImageURI: req.body.ImageURI
+                        ImageUrl: req.body.ImageUrl
                     });
 
                     console.log(req.body);
