@@ -269,9 +269,6 @@ router.route('/reviews')
         });
     });
 
-
-
-
 router.all('*', function(req, res) {
     res.json({error: 'Not supported HTTP method'});
 });
