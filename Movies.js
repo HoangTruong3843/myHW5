@@ -12,17 +12,16 @@ try {
 }
 mongoose.set('useCreateIndex', true);
 
-//user schema
-var MovieSchema = new Schema({
-    title: {type: String, required: true, index: { unique: true }},
-    year: {type: String, required: true},
-    genre: {type: String, required: true},
-    cast: [{
-        actorName: {type: String, required: true},
-        characterName: {type: String, required: true}
-    }]
+var MovieSchema  = new Schema({
+    Title: {type:String, required:true},
+    Year: {type:Date, required:true},
+    Genre: {type:String, required:true, enum:["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mystery", "Thriller", "Western"]},
+    Actors: {type:[{ActorName:String, CharacterName:String}], required:true},
+    ImageURI: {type:String, required: false},
+    averageRating: {type:Number, required: false}
 });
 
+/*
 MovieSchema.pre('save', function(next) {
     var movie = this;
 
@@ -34,6 +33,6 @@ MovieSchema.pre('save', function(next) {
         next();
     }
 });
-
+*/
 //return the model to server
 module.exports = mongoose.model('Movie', MovieSchema);
