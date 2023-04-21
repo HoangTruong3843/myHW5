@@ -19,42 +19,6 @@ app.use(cors());
 
 var router = express.Router();
 
-// start here
-let Movie = require("./Movies");//makes the Movie obj work from the Movies.js exports line
-
-router.route('/postjwt')
-    .post(authJwtController.isAuthenticated, function (req, res) {
-            console.log(req.body);
-            res = res.status(200);
-            if (req.get('Content-Type')) {
-                console.log("Content-Type: " + req.get('Content-Type'));
-                res = res.type(req.get('Content-Type'));
-            }
-            res.send(req.body);
-        }
-    );
-
-router.route('/users/:userId')
-    .get(authJwtController.isAuthenticated, function (req, res) {
-        var id = req.params.userId;
-        User.findById(id, function(err, user) {
-            if (err) res.send(err);
-
-            var userJson = JSON.stringify(user);
-            // return that user
-            res.json(user);
-        });
-    });
-router.route('/users')
-    .get(authJwtController.isAuthenticated, function (req, res) {
-        User.find(function (err, users) {
-            if (err) res.send(err);
-            // return the users
-            res.json(users);
-        });
-    });
-//end here
-
 router.post('/signup', function(req, res) {
     if (!req.body.username || !req.body.password) {
         res.json({success: false, message: 'Please pass username and password.'});
