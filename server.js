@@ -63,7 +63,6 @@ router.post('/signin', function (req, res) {
     })
 });
 
-
 router.route('/movies')
     .post(function(req, res) {
             if (!req.body.title || !req.body.year || !req.body.genre || !req.body.cast) {
@@ -245,12 +244,7 @@ router.route('/movies')
                     });
                 }
             })
-        }
-    )
-;
-
-
-
+        });
 
 router.route('/reviews')
     .post(function(req, res) {
