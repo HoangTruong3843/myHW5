@@ -12,14 +12,28 @@ try {
 }
 mongoose.set('useCreateIndex', true);
 
-var movieSchema  = new Schema({
-    Title: {type:String, required:true},
-    Year: {type:Date, required:true},
-    Genre: {type:String, required:true, enum:["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mystery", "Thriller", "Western"]},
-    Actors: {type:[{ActorName:String, CharacterName:String}], required:true},
-    ImageURI: {type:String, required: false},
-    averageRating: {type:Number, required: false}
+//user schema
+var MovieSchema = new Schema({
+    title: {type: String, required: true, index: { unique: true }},
+    year: {type: String, required: true},
+    genre: {type: String, required: true},
+    cast: [{
+        actor: {type: String, required: true},
+        character: {type: String, required: true}
+    }]
 });
 
-var Movie = mongoose.model('Movie', movieSchema);
-//module.exports = Movie;
+MovieSchema.pre('save', function(next) {
+    var movie = this;
+
+    if (movie.cast.length < 3) {
+        var err = new ValidationError(this);
+        err.errors.movie = new ValidatorError('need 3 or more actors in cast');
+        next(err);
+    } else {
+        next();
+    }
+});
+
+//return the model to server
+module.exports = mongoose.model('Movie', MovieSchema);
