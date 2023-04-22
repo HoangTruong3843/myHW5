@@ -15,7 +15,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
-
+// new
+var mongoose = require('mongoose');
+//end
 var router = express.Router();
 
 router.post('/signup', function(req, res) {
@@ -207,17 +209,16 @@ router.route('/movies')
 router.route('/movies/:movieId')
     .get(authJwtController.isAuthenticated, function (req, res) {
         var id = req.params.movieId;
-        if (req.query.reviews == "true") {
-            Movie.find({_id: mongoose.Types.ObjectId(req.query.movieId)}, function(err, data){
+            Movie.find({_id: mongoose.Types.ObjectId(req.params.movieId)}, function(err, data){
                 if(err){
                     res.status(400).json({message: "Invalid query"});
                 }else if(data.length == 0) {
                     res.status(400).json({message: "No entry found"});
                 }else{
-                    if(req.query.reviews == "True"){
+                    if(req.params.movieId == "True"){
                         Movie.aggregate([
                             {
-                                $match: {'_id': mongoose.Types.ObjectId(req.query.movieId)}
+                                $match: {'_id': mongoose.Types.ObjectId(req.params.movieId)}
                             },
                             {
                                 $lookup:{
@@ -241,33 +242,7 @@ router.route('/movies/:movieId')
                 }
             });
 
-        }else{
-            Movie.find({}, function(err, doc){
-                if(err){
-                    res.json({error: err});
-                }else{
-                    if(req.query.reviews == "True"){
-                        Movie.aggregate([
-                            {
-                                $lookup:{
-                                    from: 'reviews',
-                                    localField: '_id',
-                                    foreignField: 'Movie_ID',
-                                    as: 'Reviews'
-                                }
-                            }],function(err, data) {
-                            if(err){
-                                res.send(err);
-                            }else{
-                                res.json(data);
-                            }
-                        });
-                    }else{
-                        res.json(doc);
-                    }
-                }
-            })
-        }
+
     });
 // End here
 
