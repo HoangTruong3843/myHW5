@@ -203,6 +203,74 @@ router.route('/movies')
         });
     });
 
+//New
+router.route('/movies/:movieId')
+    .get(authJwtController.isAuthenticated, function (req, res) {
+        var id = req.params.movieId;
+        if (req.query.reviews == "true") {
+            Movie.find({_id: mongoose.Types.ObjectId(req.query.movieId)}, function(err, data){
+                if(err){
+                    res.status(400).json({message: "Invalid query"});
+                }else if(data.length == 0) {
+                    res.status(400).json({message: "No entry found"});
+                }else{
+                    if(req.query.reviews == "True"){
+                        Movie.aggregate([
+                            {
+                                $match: {'_id': mongoose.Types.ObjectId(req.query.movieId)}
+                            },
+                            {
+                                $lookup:{
+                                    from: 'reviews',
+                                    localField: '_id',
+                                    foreignField: 'Movie_ID',
+                                    as: 'Reviews'
+                                }
+                            }],function(err, doc) {
+                            if(err){
+                                console.log("hi");
+                                res.send(err);
+                            }else{
+                                console.log(doc);
+                                res.json(doc);
+                            }
+                        });
+                    }else{
+                        res.json(data);
+                    }
+                }
+            });
+
+        }else{
+            Movie.find({}, function(err, doc){
+                if(err){
+                    res.json({error: err});
+                }else{
+                    if(req.query.reviews == "True"){
+                        Movie.aggregate([
+                            {
+                                $lookup:{
+                                    from: 'reviews',
+                                    localField: '_id',
+                                    foreignField: 'Movie_ID',
+                                    as: 'Reviews'
+                                }
+                            }],function(err, data) {
+                            if(err){
+                                res.send(err);
+                            }else{
+                                res.json(data);
+                            }
+                        });
+                    }else{
+                        res.json(doc);
+                    }
+                }
+            })
+        }
+    });
+// End here
+
 router.route('/reviews')
     .post(authJwtController.isAuthenticated, function(req,res){
 
