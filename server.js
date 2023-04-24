@@ -207,11 +207,11 @@ var mongoose = require('mongoose');
 
 router.route('/movies/:movieId')
     .get(authJwtController.isAuthenticated, function (req, res) {
-        var id = mongoose.Types.ObjectId(req.params.movieId);
+        var id = mongoose.Types.ObjectId(req.query.movieId);
         if (req.query.reviews == "true") {
             // If reviews query parameter is "true", include movie information and reviews
             Movie.aggregate([
-                { $match: { '_id': mongoose.Types.ObjectId(req.params.movieId)} },
+                { $match: { '_id': mongoose.Types.ObjectId(req.query.movieId)} },
                 { $lookup: { from: "reviews", localField: "_id", foreignField: "Movie_ID", as: "Reviews" } },
                 { $sort: { "reviews.createdAt": -1 } }
             ], function (err, movie) {
