@@ -212,7 +212,7 @@ router.route('/movies/:movieId')
             // If reviews query parameter is "true", include movie information and reviews
             Movie.aggregate([
                 { $match: { _id: id } },
-                { $lookup: { from: "reviews", localField: "_id", foreignField: "movie", as: "reviews" } },
+                { $lookup: { from: "reviews", localField: "_id", foreignField: "Movie_ID", as: "Reviews" } },
                 { $sort: { "reviews.createdAt": -1 } }
             ], function (err, movie) {
                 if (err) {
