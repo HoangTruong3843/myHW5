@@ -211,7 +211,7 @@ router.route('/movies/:movieId')
         if (req.query.reviews == "true") {
             // If reviews query parameter is "true", include movie information and reviews
             Movie.aggregate([
-                { $match: { _id: id } },
+                { $match: { '_id': mongoose.Types.ObjectId(req.params.movieId)} },
                 { $lookup: { from: "reviews", localField: "_id", foreignField: "Movie_ID", as: "Reviews" } },
                 { $sort: { "reviews.createdAt": -1 } }
             ], function (err, movie) {
