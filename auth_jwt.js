@@ -7,13 +7,9 @@ var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
 opts.secretOrKey = process.env.SECRET_KEY;
 
-require('dotenv').config();
-const jwtOptions = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.SECRET
-};
 
-passport.use(new JwtStrategy(jwtOptions,opts, function(jwt_payload, done) {
+
+passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
     User.findById(jwt_payload.id, function (err, user) {
         if (user) {
             done(null, user);
