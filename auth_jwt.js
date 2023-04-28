@@ -7,8 +7,6 @@ var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
 opts.secretOrKey = process.env.SECRET_KEY;
 
-
-
 passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
     User.findById(jwt_payload.id, function (err, user) {
         if (user) {
