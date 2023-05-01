@@ -252,7 +252,7 @@ router.route('/reviews')
                     Rating: req.body.Rating,
                     Movie_ID: req.body.Movie_ID
                 });
-
+                console.log(rev);
                 console.log(req.body);
 
                 rev.save(function(err){
