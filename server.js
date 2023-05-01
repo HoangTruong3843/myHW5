@@ -246,7 +246,7 @@ router.route('/reviews')
                 res.status(400).json({message: "Invalid query"});
             }else if (data != null){
                 let rev = new Review({
-                    Name: decoded.username,
+                    Name: decoded.Name,
                     Review: req.body.Review,
                     Rating: req.body.Rating,
                     Movie_ID: req.body.Movie_ID
