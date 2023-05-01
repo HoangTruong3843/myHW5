@@ -98,7 +98,6 @@ router.route('/movies')
             });
         }
     })
-
     .get(authJwtController.isAuthenticated, function (req, res) {
         if(req.query.movieId != null){
             Movie.find({_id: mongoose.Types.ObjectId(req.query.movieId)}, function(err, data){
@@ -162,7 +161,6 @@ router.route('/movies')
         }
 
     })
-
     .put(authJwtController.isAuthenticated, function(req,res) {
         if(req.body.Title != null && req.body.Year != null && req.body.Genre != null && req.body.Actors != null && req.body.Actors.length >= 3){
             Movie.findOneAndUpdate({Title:req.body.Search},
@@ -187,7 +185,6 @@ router.route('/movies')
             res.status(400).json({message: "Please no null values"});
         }
     })
-
     .delete(authJwtController.isAuthenticated, function(req,res){
         Movie.findOneAndDelete({Title: req.body.Title}, function(err, doc){
             if(err){
@@ -235,6 +232,7 @@ router.route('/movies/:movieId')
 
 
 router.route('/reviews')
+    /*
     .post(authJwtController.isAuthenticated, function(req,res){
         console.log(req.body);
         const usertoken = req.headers.authorization;
@@ -292,7 +290,38 @@ router.route('/reviews')
                 res.json({failure: "Movie does not exist"});
             }
         });
-    });
+    });*/
+    .post(authJwtController.isAuthenticated, function (req, res) {
+        if(!req.body.Movie_ID || !req.body.Name || !req.body.Review || !req.body.Rating){
+            res.status(400).json({message: "need more info of the review"});
+        }else {
+            Movie.find({Title: req.body.Movie_ID}, function (err, data) {
+                if (err) {
+                    res.status(400).json({message: "Invalid query"});
+                } else if (data.length == 0) {
+                    let rev = new Review({
+                        Name: req.body.Name,
+                        Review: req.body.Review,
+                        Rating: req.body.Rating,
+                        Movie_ID: req.body.Movie_ID
+                    });
+
+                    console.log(req.body);
+                    rev.save(function (err) {
+                        if (err) {
+                            res.json({message: err});
+                        } else {
+                            res.json({msg: "Successfully saved"});
+                        }
+
+                    });
+                } else {
+                    res.json({message: "Review already exists"});
+                }
+
+            });
+        }
+    })
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
