@@ -236,7 +236,7 @@ router.route('/movies/:movieId')
 
 router.route('/reviews')
     .post(authJwtController.isAuthenticated, function(req,res){
-
+        console.log(req.body);
         const usertoken = req.headers.authorization;
         const token = usertoken.split(' ');
         const decoded = jwt.verify(token[1], process.env.SECRET_KEY);
@@ -253,7 +253,7 @@ router.route('/reviews')
                     Movie_ID: req.body.Movie_ID
                 });
                 console.log(rev);
-                console.log(req.body);
+
 
                 rev.save(function(err){
                     if(err) {
